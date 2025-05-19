@@ -1,13 +1,8 @@
 // Background script for handling messages and side panel state
 
-// Inlined StorageService logic (no ES module imports)
-const DEFAULT_PROMPTS = [
-  "Please summarize the content of this webpage.",
-  "What are the key points from this page?",
-  "Extract the main ideas from this content.",
-  "Give me a brief overview of this page."
-];
+import { DEFAULT_PROMPTS } from './constants/defaultPrompts.js';
 
+// Inlined StorageService logic (no ES module imports)
 async function getApiKey() {
   const result = await chrome.storage.sync.get('apiKey');
   return result.apiKey;
@@ -76,7 +71,79 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       handleCaptureAndSummarize(request, sendResponse);
       break;
   }
+  // Full page screenshot logic
+  if (request.type === 'START_FULL_PAGE_CAPTURE') {
+    // Prefer sender.tab.id (the tab where the side panel is open)
+    const targetTabId = sender.tab && sender.tab.id ? sender.tab.id : null;
+    const sendCaptureMessage = (tabId, showModal, retry = false) => {
+      chrome.tabs.sendMessage(tabId, { type: 'START_FULL_PAGE_CAPTURE', showModal }, (response) => {
+        if (chrome.runtime.lastError) {
+          const errMsg = chrome.runtime.lastError.message;
+          // Only try to inject if not already retried and error is receiving end does not exist
+          if (!retry && errMsg.includes('Could not establish connection. Receiving end does not exist.')) {
+            chrome.scripting.executeScript({
+              target: { tabId: tabId },
+              files: ['src/fullPageCapture.js']
+            }, () => {
+              // Retry once after injection
+              sendCaptureMessage(tabId, showModal, true);
+            });
+          } else if (!errMsg.includes('Could not establish connection. Receiving end does not exist.')) {
+            // Only log other errors
+            console.error('[SmartPageAI] Error sending START_FULL_PAGE_CAPTURE:', errMsg);
+            sendResponse({ started: false, error: 'Full page screenshot is not available on this page.' });
+          } else {
+            // Suppress the error after retry
+            sendResponse({ started: false, error: 'Full page screenshot is not available on this page.' });
+          }
+        } else {
+          sendResponse({ started: true });
+        }
+      });
+    };
+    if (targetTabId) {
+      sendCaptureMessage(targetTabId, request.showModal);
+    } else {
+      // Fallback: find the active tab in the last focused window
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        const pageTab = tabs.find(tab =>
+          !tab.url.startsWith('chrome://') &&
+          !tab.url.startsWith('chrome-extension://')
+        );
+        if (pageTab) {
+          sendCaptureMessage(pageTab.id, request.showModal);
+        } else {
+          sendResponse({ started: false, error: 'No suitable page tab found' });
+        }
+      });
+    }
+    return true;
+  }
+  if (request.type === 'FULL_PAGE_CAPTURE_DONE') {
+    chrome.runtime.sendMessage({ type: 'FULL_PAGE_CAPTURE_DONE', dataUrl: request.dataUrl }, () => {
+      if (chrome.runtime.lastError && chrome.runtime.lastError.message.includes('Could not establish connection. Receiving end does not exist.')) {
+        // Suppress this error
+        return;
+      }
+    });
+    return true;
+  }
+  if (request.type === 'FULL_PAGE_CAPTURE_REQUEST') {
+    console.log('[SmartPageAI] Background received FULL_PAGE_CAPTURE_REQUEST');
+    chrome.tabs.captureVisibleTab(null, { format: 'png' }, (dataUrl) => {
+      sendResponse({ dataUrl });
+    });
+    return true;
+  }
   return true; // Keep the message channel open for async responses
+});
+
+// Dummy listener to prevent 'Could not establish connection' error for FULL_PAGE_CAPTURE_DONE
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message && message.type === 'FULL_PAGE_CAPTURE_DONE') {
+    // No-op: prevents warning if no one is listening
+    return;
+  }
 });
 
 async function handleCaptureAndSummarize(request, sendResponse) {

@@ -30,18 +30,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         popupUI.showError('Please set your API key in settings');
         return;
       }
-      const selectedPrompt = state.customPrompts.find(p => p.id === state.selectedPromptId);
-      if (!selectedPrompt || !selectedPrompt.text) {
-        popupUI.showError('Please select or enter a prompt');
+      // Use the current textarea value as the prompt
+      const promptText = document.getElementById('mainCustomPrompt').value.trim();
+      if (!promptText) {
+        popupUI.showError('Please enter a prompt');
         return;
       }
+      // Add Markdown formatting instruction suffix
+      const markdownSuffix = "\n\nPlease format your response in Markdown. Use bullet points, numbered lists, and headings where appropriate. Be precise, concise, and correct in your answer.";
+      const finalPrompt = promptText + markdownSuffix;
       // Show loading state
       popupUI.updateLoadingState(true);
-      // Capture screenshot
-      const screenshotUrl = await captureVisibleTab();
+      // Screenshot mode logic
+      const screenshotMode = document.getElementById('fullScreenshotRadio').checked ? 'full' : 'visible';
+      let screenshotUrl = null;
+      if (screenshotMode === 'visible') {
+        screenshotUrl = await captureVisibleTab();
+      } else {
+        // Full page screenshot: trigger capture and wait for result
+        screenshotUrl = await new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage({ type: 'START_FULL_PAGE_CAPTURE', showModal: false }, (response) => {
+            if (response && response.error) {
+              popupUI.showError(response.error);
+              reject(new Error(response.error));
+            }
+          });
+          // Listen for the result once
+          const handler = (message, sender, sendResponse) => {
+            if (message.type === 'FULL_PAGE_CAPTURE_DONE') {
+              resolve(message.dataUrl);
+              chrome.runtime.onMessage.removeListener(handler);
+            }
+          };
+          chrome.runtime.onMessage.addListener(handler);
+        });
+      }
       // Generate summary
       const apiService = new ApiService(state.apiKey);
-      const summary = await apiService.summarizeContent(screenshotUrl, selectedPrompt.text, state.selectedModel);
+      const summary = await apiService.summarizeContent(screenshotUrl, finalPrompt, state.selectedModel);
       // Update UI with results
       popupUI.updateSummary(summary);
       popupUI.updateScreenshot(screenshotUrl);
@@ -52,5 +78,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Hide loading state
       popupUI.updateLoadingState(false);
     }
+  });
+
+  document.getElementById('fullPageScreenshotBtn').addEventListener('click', async () => {
+    chrome.runtime.sendMessage({ type: 'START_FULL_PAGE_CAPTURE', showModal: true }, (response) => {
+      if (response && response.error) {
+        alert(response.error);
+      }
+    });
+  });
+
+  document.getElementById('closeScreenshotModal').addEventListener('click', () => {
+    document.getElementById('screenshotModal').classList.remove('show');
+    document.getElementById('fullPageScreenshotPreview').src = '';
   });
 });

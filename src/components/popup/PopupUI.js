@@ -1,5 +1,6 @@
 import { AppState } from '../../state.js';
 import { showSnackbar } from '../../utils/helpers.js';
+import { MODEL_LIST } from '../../constants/models.js';
 
 // PopupUI component for managing the main popup interface
 export class PopupUI {
@@ -56,12 +57,15 @@ export class PopupUI {
     this.renderPrompts(state);
     // Render models dropdown
     this.renderModels(state);
-    // Always set textarea to the selected prompt's value
+    // Always set textarea to the selected prompt's value ONLY if the user hasn't edited it
     if (state.customPrompts && state.customPrompts.length > 0) {
       const selected = state.customPrompts.find(p => p.id === state.selectedPromptId) || state.customPrompts[0];
-      this.elements.mainCustomPrompt.value = selected.text;
-      requestAnimationFrame(() => this.autoResizeTextarea());
-      this.elements.assist.disabled = !state.apiKey || !selected.text;
+      // Only update textarea if it doesn't match the selected prompt (prevents overwriting user edits)
+      if (this.elements.mainCustomPrompt.value !== selected.text) {
+        this.elements.mainCustomPrompt.value = selected.text;
+        requestAnimationFrame(() => this.autoResizeTextarea());
+      }
+      this.elements.assist.disabled = !state.apiKey || !this.elements.mainCustomPrompt.value.trim();
     } else {
       this.elements.mainCustomPrompt.value = '';
       this.elements.assist.disabled = true;
@@ -92,14 +96,8 @@ export class PopupUI {
 
   renderModels(state) {
     const modelSelect = this.elements.modelSelect;
-    const models = [
-      { id: 'gpt-4o', name: 'GPT-4o (latest, vision)' },
-      { id: 'gpt-4-vision-preview', name: 'GPT-4 Vision Preview' },
-      { id: 'gpt-4-1106-vision-preview', name: 'GPT-4 1106 Vision Preview' },
-      { id: 'gpt-4-turbo', name: 'GPT-4 Turbo (vision)' }
-    ];
     modelSelect.innerHTML = '';
-    models.forEach(model => {
+    MODEL_LIST.forEach(model => {
       const option = document.createElement('option');
       option.value = model.id;
       option.textContent = model.name;
@@ -130,12 +128,18 @@ export class PopupUI {
     if (isLoading) {
       this.elements.assist.disabled = true;
       this.elements.assist.innerHTML = 'Assist <span class="button-spinner"></span>';
-      this.elements.summary.innerHTML = '<div class="loading">Generating summary...</div>';
-      this.elements.summary.style.display = 'block';
+      this.elements.summary.innerHTML = '';
+      this.elements.summary.style.display = 'none';
+      this.clearScreenshot();
     } else {
       this.elements.assist.disabled = false;
       this.elements.assist.innerHTML = 'Assist';
     }
+  }
+
+  clearScreenshot() {
+    this.elements.screenshot.style.display = 'none';
+    this.elements.screenshot.src = '';
   }
 
   showError(message) {

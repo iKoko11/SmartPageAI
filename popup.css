@@ -447,3 +447,66 @@ input:focus, textarea:focus, select:focus, button:focus {
 .mdc-layout-grid {
   margin-top: 3px;
 }
+
+.screenshot-modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  align-items: center;
+  justify-content: center;
+}
+.screenshot-modal.show {
+  display: flex;
+}
+.screenshot-modal-content {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 24px 24px 16px 24px;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.screenshot-modal-img {
+  max-width: 80vw;
+  max-height: 70vh;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60,64,67,.10);
+}
+.screenshot-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #fff;
+  color: #333;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(60,64,67,.10);
+  z-index: 2;
+}
+.screenshot-modal-close:hover, .screenshot-modal-close:focus {
+  background: #f5f5f5;
+}
+
+.button-spinner, .loading-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid #c3dafe;
+  border-top: 2.5px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

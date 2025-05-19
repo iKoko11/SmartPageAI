@@ -13,13 +13,28 @@
     <!-- Top App Bar -->
     <header class="mdc-top-app-bar" role="banner">
       <div class="mdc-top-app-bar__row" style="display: flex; align-items: center; justify-content: space-between;">
-          <span class="mdc-top-app-bar__title" style="margin-left:8px;">SmartPage AI</span>
-        <button id="toggleSettings" class="mdc-icon-button" title="Settings" aria-label="Settings">
-          <span class="material-icons">settings</span>
-        </button>
+        <span class="mdc-top-app-bar__title" style="margin-left:8px;">SmartPage AI</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="fullPageScreenshotBtn" class="mdc-icon-button" title="Full Page Screenshot" aria-label="Full Page Screenshot" style="width:40px;height:40px;min-width:40px;min-height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0;">
+            <img src="images/capture.png" alt="Screenshot" style="width:22px;height:22px;object-fit:contain;display:block;" />
+          </button>
+          <button id="toggleSettings" class="mdc-icon-button" title="Settings" aria-label="Settings">
+            <span class="material-icons">settings</span>
+          </button>
+        </div>
       </div>
       <hr class="divider" aria-hidden="true" style="margin:0;" />
     </header>
+
+    <!-- Screenshot Modal -->
+    <div id="screenshotModal" class="screenshot-modal">
+      <div class="screenshot-modal-content">
+        <button id="closeScreenshotModal" class="mdc-icon-button screenshot-modal-close" title="Close" aria-label="Close">
+          <span class="material-icons">close</span>
+        </button>
+        <img id="fullPageScreenshotPreview" class="screenshot-modal-img" alt="Full Page Screenshot Preview" />
+      </div>
+    </div>
 
     <!-- Snackbar for feedback -->
     <div id="snackbar" class="mdc-snackbar" aria-live="polite" role="alert"></div>
@@ -59,6 +74,16 @@
             </div>
           </div>
           <textarea id="mainCustomPrompt" rows="3" placeholder="Edit or write your prompt here..." aria-label="Prompt Text"></textarea>
+          <div class="screenshot-mode-toggle" style="margin-bottom: 12px; display: flex; gap: 12px; align-items: center; justify-content: center;">
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="screenshotMode" id="visibleScreenshotRadio" value="visible" checked style="accent-color: var(--primary);" />
+              <span>Visible Page</span>
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="radio" name="screenshotMode" id="fullScreenshotRadio" value="full" style="accent-color: var(--primary);" />
+              <span>Full Page</span>
+            </label>
+          </div>
           <div class="button-row">
             <button id="assist">Assist</button>
           </div>

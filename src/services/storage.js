@@ -1,12 +1,6 @@
+import { DEFAULT_PROMPTS } from '../constants/defaultPrompts.js';
 // Storage service for handling Chrome storage operations
 export class StorageService {
-  static DEFAULT_PROMPTS = [
-    { id: 'default-1', name: "Summarize", text: "Please summarize the content of this webpage." },
-    { id: 'default-2', name: "Key Points", text: "What are the key points from this page?" },
-    { id: 'default-3', name: "Main Ideas", text: "Extract the main ideas from this content." },
-    { id: 'default-4', name: "Overview", text: "Give me a brief overview of this page." }
-  ];
-
   static generatePromptId() {
     return 'prompt-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
   }
