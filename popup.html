@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>SmartPage AI</title>
+    <script type="module" src="popup.js"></script>
+    <script src="marked.min.js"></script>
+    <link rel="stylesheet" href="popup.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Top App Bar -->
+    <header class="mdc-top-app-bar" role="banner">
+      <div class="mdc-top-app-bar__row" style="display: flex; align-items: center; justify-content: space-between;">
+          <span class="mdc-top-app-bar__title" style="margin-left:8px;">SmartPage AI</span>
+        <button id="toggleSettings" class="mdc-icon-button" title="Settings" aria-label="Settings">
+          <span class="material-icons">settings</span>
+        </button>
+      </div>
+      <hr class="divider" aria-hidden="true" style="margin:0;" />
+    </header>
+
+    <!-- Snackbar for feedback -->
+    <div id="snackbar" class="mdc-snackbar" aria-live="polite" role="alert"></div>
+
+    <!-- Main Content -->
+    <main class="mdc-layout-grid" role="main">
+      <!-- Settings Card -->
+      <section id="settingsPanel" class="mdc-card settings-card" style="display: none" aria-label="Settings Panel">
+        <div class="mdc-card__content">
+          <h2 class="mdc-typography--headline6">OpenAI API key</h2>
+          <input type="password" id="apiKey" class="mdc-text-field__input" placeholder="Enter your OpenAI API Key" aria-label="OpenAI API Key" />
+          <div id="apiKeyFeedback" class="feedback"></div>
+          <h2 class="mdc-typography--headline6">Manage Prompts</h2>
+          <textarea id="settingsCustomPrompt" class="mdc-text-field__input" rows="3" placeholder="Edit or write your prompt here..." aria-label="Prompt Text (Settings)"></textarea>
+          <div class="prompt-save-row">
+            <input type="text" id="promptName" class="mdc-text-field__input" placeholder="Prompt name (e.g. 'Summarize Article')" aria-label="Prompt Name" />
+            <button id="savePromptBtn" class="mdc-button mdc-button--outlined" aria-label="Save Prompt"><span class="material-icons">save</span></button>
+          </div>
+          <ul id="promptList" class="prompt-list"></ul>
+          <div id="promptFeedback" class="feedback"></div>
+        </div>
+        <div id="advancedToggle" class="advanced-toggle">Advanced ▼</div>
+        <div class="reset-btn-center">
+          <button id="resetPromptsBtn" class="mdc-button reset-prompts-btn"><span class="material-icons">refresh</span>Reset Prompts</button>
+        </div>
+      </section>
+
+      <!-- Main Prompt Card -->
+      <section id="mainPromptArea" class="main-card" aria-label="Prompt Area">
+        <div class="mdc-card__content">
+          <div class="select-row-horizontal">
+            <div class="select-wrapper">
+              <select id="promptSelect" aria-label="Select Prompt"></select>
+            </div>
+            <div class="select-wrapper">
+              <select id="modelSelect" aria-label="Select Model"></select>
+            </div>
+          </div>
+          <textarea id="mainCustomPrompt" rows="3" placeholder="Edit or write your prompt here..." aria-label="Prompt Text"></textarea>
+          <div class="button-row">
+            <button id="assist">Assist</button>
+          </div>
+          <div id="summary" class="summary" ></div>
+          <img id="screenshot" class="screenshot" alt="Screenshot preview" />
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
