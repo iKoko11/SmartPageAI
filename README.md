@@ -29,7 +29,7 @@ SmartPage AI is a modern Chrome extension that lets you summarize, translate, Q&
 ## 🚀 Getting Started
 
 1. **Clone or Download** this repo.
-2. **Add your OpenAI API key** in the extension settings panel.
+2. **Add your OpenAI API key** in the extension settings panel. Don't have the key? Get one : [Link](https://platform.openai.com/docs/api-reference/introduction)
 3. **Choose a prompt** or write your own.
 4. **Select screenshot mode** (Visible or Full Page).
 5. **Click Assist**—the extension captures the page and summarizes, translates, or answers questions!
@@ -48,9 +48,3 @@ SmartPage AI is a modern Chrome extension that lets you summarize, translate, Q&
 - **Centralized config:** Prompts and models are defined in `src/constants/` and imported everywhere.
 - **No debug logs:** All unnecessary logging is removed for production.
 - **Easy to extend:** Add new prompts or models in one place.
-
----
-
-## 📄 License
-
-MIT
